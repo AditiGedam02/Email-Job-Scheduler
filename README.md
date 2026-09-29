@@ -1,201 +1,119 @@
-**# Email Job Scheduler**
+# Email Job Scheduler
 
 A full-stack email scheduling and delivery system built with TypeScript, Express, BullMQ, Redis, PostgreSQL, Prisma, Elasticsearch, React, and Tailwind CSS.
 
 The application allows users to create email campaigns, schedule large batches of emails, control delivery rate and delay, search email records, monitor queues, and receive Slack notifications when an hourly sending limit is reached.
 
-\---
-
-**## Features**
-
-\- Google OAuth authentication
-
-\- Email campaign scheduling
-
-\- Multiple senders
-
-\- CSV/TXT recipient upload
-
-\- Configurable start time
-
-\- Configurable delay between individual emails
-
-\- Configurable hourly sending limit
-
-\- BullMQ + Redis persistent job scheduling
-
-\- Configurable worker concurrency
-
-\- PostgreSQL persistence using Prisma
-
-\- Ethereal SMTP for test email delivery
-
-\- Elasticsearch-powered email search
-
-\- Scheduled emails dashboard
-
-\- Sent emails dashboard
-
-\- Slack OAuth integration
-
-\- Slack notification when hourly sending limit is reached
-
-\- Bull Board queue monitoring
-
-\- Restart recovery for scheduled jobs
-
-\- Support for large batches of emails
-
-\- Idempotent job claiming to reduce duplicate processing
-
-\- Delivery attempt tracking
-
-\- Campaign statistics and status tracking
-
-\---
-
-**## Technology Stack**
-
-**### Backend**
-
-\- Node.js
-
-\- TypeScript
-
-\- Express
-
-\- Prisma
-
-\- PostgreSQL
-
-\- Redis
-
-\- BullMQ
-
-\- Nodemailer
-
-\- Ethereal Email
-
-\- Elasticsearch
-
-\- Passport.js
-
-\- Google OAuth
-
-\- Slack OAuth
-
-**### Frontend**
-
-\- React
-
-\- TypeScript
-
-\- Vite
-
-\- Tailwind CSS
-
-\- Axios
-
-\- Lucide React
-
-**### Infrastructure**
-
-\- Docker
-
-\- Docker Compose
-
-\- PostgreSQL
-
-\- Redis
-
-\- Elasticsearch
-
-\---
-
-**## System Architecture**
-
-\`\`\`text
-
-                         ┌──────────────────────┐
-
-                         │       React UI       │
-
-                         │   TypeScript +       │
-
-                         │      Tailwind        │
-
-                         └──────────┬───────────┘
-
-                                    │
-
-                                    │ HTTP / REST
-
-                                    ▼
-
-                         ┌──────────────────────┐
-
-                         │   Express Backend    │
-
-                         │      TypeScript      │
-
-                         └───────┬──────┬───────┘
-
-                                 │      │
-
-                    ┌────────────┘      └─────────────┐
-
-                    ▼                                 ▼
-
-           ┌─────────────────┐              ┌─────────────────┐
-
-           │   PostgreSQL    │              │     Redis       │
-
-           │                 │              │                 │
-
-           │ Users           │              │ BullMQ queues   │
-
-           │ Campaigns       │              │ Job state       │
-
-           │ Email Jobs      │              │ OAuth state     │
-
-           │ Attempts        │              │ Notifications   │
-
-           │ Senders         │              └────────┬────────┘
-
-           └─────────────────┘                       │
-
-                                                     ▼
-
-                                            ┌─────────────────┐
-
-                                            │ BullMQ Workers  │
-
-                                            │                 │
-
-                                            │ Email delivery  │
-
-                                            └────────┬────────┘
-
-                                                     │
-
-                                  ┌──────────────────┴──────────────┐
-
-                                  ▼                                 ▼
-
-                         ┌─────────────────┐               ┌─────────────────┐
-
-                         │ Ethereal SMTP   │               │  Elasticsearch  │
-
-                         │ Email Delivery  │               │ Email Search    │
-
-                         └─────────────────┘               └─────────────────┘
-
-                                                                  │
-
-                                                                  ▼
-
-                                                           Search Results
-
+---
+
+## Features
+
+- Google OAuth authentication
+- Email campaign scheduling
+- Multiple senders
+- CSV/TXT recipient upload
+- Configurable start time
+- Configurable delay between individual emails
+- Configurable hourly sending limit
+- BullMQ + Redis persistent job scheduling
+- Configurable worker concurrency
+- PostgreSQL persistence using Prisma
+- Ethereal SMTP for test email delivery
+- Elasticsearch-powered email search
+- Scheduled emails dashboard
+- Sent emails dashboard
+- Slack OAuth integration
+- Slack notification when hourly sending limit is reached
+- Bull Board queue monitoring
+- Restart recovery for scheduled jobs
+- Support for large batches of emails
+- Idempotent job claiming to reduce duplicate processing
+- Delivery attempt tracking
+- Campaign statistics and status tracking
+
+---
+
+## Technology Stack
+
+### Backend
+
+- Node.js
+- TypeScript
+- Express
+- Prisma
+- PostgreSQL
+- Redis
+- BullMQ
+- Nodemailer
+- Ethereal Email
+- Elasticsearch
+- Passport.js
+- Google OAuth
+- Slack OAuth
+
+### Frontend
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Axios
+- Lucide React
+
+### Infrastructure
+
+- Docker
+- Docker Compose
+- PostgreSQL
+- Redis
+- Elasticsearch
+
+---
+
+## System Architecture
+
+```text
+                         ┌──────────────────────┐
+                         │       React UI       │
+                         │   TypeScript +       │
+                         │      Tailwind        │
+                         └──────────┬───────────┘
+                                    │
+                                    │ HTTP / REST
+                                    ▼
+                         ┌──────────────────────┐
+                         │   Express Backend    │
+                         │      TypeScript      │
+                         └───────┬──────┬───────┘
+                                 │      │
+                    ┌────────────┘      └─────────────┐
+                    ▼                                 ▼
+           ┌─────────────────┐              ┌─────────────────┐
+           │   PostgreSQL    │              │     Redis       │
+           │                 │              │                 │
+           │ Users           │              │ BullMQ queues   │
+           │ Campaigns       │              │ Job state       │
+           │ Email Jobs      │              │ OAuth state     │
+           │ Attempts        │              │ Notifications   │
+           │ Senders         │              └────────┬────────┘
+           └─────────────────┘                       │
+                                                     ▼
+                                            ┌─────────────────┐
+                                            │ BullMQ Workers  │
+                                            │                 │
+                                            │ Email delivery  │
+                                            └────────┬────────┘
+                                                     │
+                                  ┌──────────────────┴──────────────┐
+                                  ▼                                 ▼
+                         ┌─────────────────┐               ┌─────────────────┐
+                         │ Ethereal SMTP   │               │  Elasticsearch  │
+                         │ Email Delivery  │               │ Email Search    │
+                         └─────────────────┘               └─────────────────┘
+                                                                  │
+                                                                  ▼
+                                                           Search Results
+                                                    
 \## Project Structure
 
 email-job-schedular/
